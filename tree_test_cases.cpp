@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-void log(std::string message, node* tree) {
+void log(std::string message, shared_ptr<node> tree) {
     if (tree == nullptr)
         cout << message << endl;
     else {
@@ -12,29 +12,49 @@ void log(std::string message, node* tree) {
     }
 }
 
+void output_welcome_message() {
+    cout << "Please enter a number from 1 to 5 to fetch the testcase." << endl;
+    cout << "1: test example tree building;" << endl;
+    cout << "2: test remove function on a simple tree;" << endl;
+    cout << "3: test remove function on example tree;" << endl;
+    cout << "4: test remove smallest chile on example tree;" << endl;
+    cout << "5: test move function on example tree;" << endl;
+    cout << "e: exit." << endl << endl;
+    cout << "command: ";
+}
+
+
 /* We will store all nodes from an example tree as global variables.
  * That is usually a bad practice but uh whatever.
  */
 
-node *a, *b, *c, *d, *e, *f, *g;
+shared_ptr<node> a, b, c, d, e, f, g;
 
 void test::init_example_tree() {
-    a = new node("A");
-    b = new node("B");
-    c = new node("C");
-    d = new node("D");
-    e = new node("E");
-    f = new node("F");
-    g = new node("G");
+    a = shared_ptr<node>(new node("A"));
+    b = shared_ptr<node>(new node("B"));
+    c = shared_ptr<node>(new node("C"));
+    d = shared_ptr<node>(new node("D"));
+    e = shared_ptr<node>(new node("E"));
+    f = shared_ptr<node>(new node("F"));
+    g = shared_ptr<node>(new node("G"));
 
-    e->insert_child(f);
-    e->insert_child(g);
+    /* In real life, we will only insert pointers like this:
+     *      node *a("A"), *b("B");
+     *      a->insert_child(b);
+     * but in this case I use shared_ptr because I have to
+     * re-init the tree every time without taking care of
+     * making allocated memory free over and over again.
+     * */
 
-    b->insert_child(c);
+    e->insert_child(&* f);
+    e->insert_child(&* g);
 
-    a->insert_child(b);
-    a->insert_child(d);
-    a->insert_child(e);
+    b->insert_child(&* c);
+
+    a->insert_child(&* b);
+    a->insert_child(&* d);
+    a->insert_child(&* e);
 }
 
 void test::test_example_tree() {
@@ -42,9 +62,9 @@ void test::test_example_tree() {
 }
 
 void test::simple_build_and_pop() {
-    node* n1 = new node("N1");
-    node* n2 = new node("N2");
-    n1->insert_child(n2);
+    shared_ptr<node> n1(new node("N1"));
+    shared_ptr<node> n2(new node("N2"));
+    n1->insert_child(&*n2);
     log("Suppose we have a simple tree: ", n1);
     log("Let`s try to separate n2. ");
     n2->pop_subtree();
@@ -66,7 +86,7 @@ void test::build_and_pop() {
 void test::test::move() {
     log("Let`s test the move operation for our tree: http://vk.cc/4kxlGT", a);
     log("We move subtree E under node B: http://vk.cc/4kxnc0");
-    e->move_under(b);
+    e->move_under(&*b);
     log("After that, tree A looks like: http://vk.cc/4kxnvO", a);
 }
 

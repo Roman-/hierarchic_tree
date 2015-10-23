@@ -1,8 +1,10 @@
 #ifndef TREE_TEST_CASES_H
 #define TREE_TEST_CASES_H
 #include "node.h"
+#include <memory>
 
-void log(std::string message, node* tree = nullptr);
+void log(std::string message, std::shared_ptr<node> tree = nullptr);
+void output_welcome_message();
 
 class test {
 public:
